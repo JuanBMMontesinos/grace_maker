@@ -9,5 +9,9 @@ module.exports = function(app){
     res.render('index');
   });
 
+  app.get('/template', function(req, res){
+    res.render('template');
+  });
+
 
 }

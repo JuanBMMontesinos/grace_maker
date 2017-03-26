@@ -11,14 +11,22 @@ var speechConstructEngine = function(){
   var lastCssProp;
 
   lastFrameSeconds = new Date().getTime();
-  minTick = 300;
+  minTick = 1000;
 
   // Array de objetos que ira devolver o retorno HTML baseado em palavras chaves
   var keywordHTML = [
+    {keyword: 'cabeçalho', html: '<div id="header">Cabeçalho</div>'},
     {keyword: 'menu', html: '<div id="menu">Menu</div>'},
+    {keyword: 'Menu', html: '<div id="menu">Menu</div>'},
     {keyword: 'rodapé', html: '<div id="rodape">Rodape</div>'},
+    {keyword: 'rodape', html: '<div id="rodape">Rodape</div>'},
     {keyword: 'botão', html: '<input type="button" />' },
-    {keyword: 'form', html: '<form></form>'}
+    {keyword: 'botao', html: '<input type="button" />' },
+    {keyword: 'form', html: '<form></form>'},
+    // {keyword: 'template', html: '<iframe src="http://localhost:3001/templates/halice/index.html" id="iframe_bluehack" style="width:100%; height:90%"></iframe>'},
+    {keyword: 'template', html: '<iframe src="/template" id="iframe_bluehack" style="width:100%; height:90%"></iframe>'},
+    // {keyword: 'template', html: '<iframe src="templates/Bluehack.html" id="iframe_bluehack" style="width:100%; height:90%"></iframe>'},
+    // {keyword: 'template', html: '<frameset><frame src="templates/Bluehack.html" id="iframe_bluehack" style="width:100%; height:90%"></frameset>'},
   ]
 
   var keywordCSSProp = [
@@ -27,14 +35,14 @@ var speechConstructEngine = function(){
     {keyword: 'espaço interno', cssProp: 'padding'},
     {keyword: 'margem', cssProp: 'margin'},
     {keyword: 'fundo', cssProp: 'background'},
+    {keyword: 'com fundo', cssProp: 'background'},
     {keyword: 'cor de fundo', cssProp: 'background'},
     {keyword: 'cor do fundo', cssProp: 'background'},
-    // {keyword: 'cor de texto', cssProp: 'color'},
-    // {keyword: 'cor do texto', cssProp: 'color'},
     {keyword: 'alinhar', cssProp: 'float'},
     {keyword: 'alinhado', cssProp: 'float'},
     {keyword: 'alinhamento', cssProp: 'float'},
     {keyword: 'largura', cssProp: 'width'},
+    {keyword: 'Largura', cssProp: 'width'},
     {keyword: 'altura', cssProp: 'height'},
   ]
 
@@ -45,15 +53,19 @@ var speechConstructEngine = function(){
     {keyword: 'cinza', cssValue: 'grey'},
     {keyword: 'verde', cssValue: 'green'},
     {keyword: 'branco', cssValue: 'white'},
-    {keyword: '10 pixels', cssValue: '10px'},
-    {keyword: '20 pixels', cssValue: '20px'},
-    {keyword: '30 pixels', cssValue: '30px'},
-    {keyword: '40 pixels', cssValue: '40px'},
-    {keyword: '50 pixels', cssValue: '50px'},
-    {keyword: '60 pixels', cssValue: '60px'},
-    {keyword: '70 pixels', cssValue: '70px'},
+    {keyword: '10', cssValue: '10px'},
+    {keyword: '20', cssValue: '20px'},
+    {keyword: '30', cssValue: '30px'},
+    {keyword: '40', cssValue: '40px'},
+    {keyword: '50', cssValue: '50px'},
+    {keyword: '60', cssValue: '60px'},
+    {keyword: '70', cssValue: '70px'},
     {keyword: 'esquerda', cssValue: 'left'},
     {keyword: 'direita', cssValue: 'right'},
+  ]
+
+  var keywordCmd = [
+
   ]
 
   // Função para fazer parse do Text
@@ -69,6 +81,17 @@ var speechConstructEngine = function(){
     });
 
   };
+
+  // Gambi para apresentar o Pitch
+
+  function mocatedTemplate(){
+
+    var iframe = document.createElement('iframe');
+    iframe.src = 'http://www.bluehack.org/';
+
+    $('#container').append(iframe);
+
+  }
 
   function log(text){
     console.log('SpeechConstructEngine Log: ' + text);
@@ -91,11 +114,9 @@ var speechConstructEngine = function(){
     // Fixa problema do Speech devolver varias vezes a mesma palavra de uma vez
 
     console.log(lastWord);
-    console.log(audioTranscritEvent);
 
     var currentTick = currentFrameSeconds - lastFrameSeconds;
-    // console.log(currentTick);
-    //
+
     if(currentTick < minTick){
       callback('');
       return;
@@ -108,6 +129,7 @@ var speechConstructEngine = function(){
 
       // Verifica se ultima palavra capturada pelo Speech está no array de HTML
       if(currentValue.keyword.indexOf(lastWord) != -1){
+      // if(currentValue.keyword == lastWord){
 
         var el =  $.parseHTML(currentValue.html);
 
@@ -115,6 +137,26 @@ var speechConstructEngine = function(){
         html = el;
 
         lastDomObj = el;
+
+        if(currentValue.keyword.indexOf('template') != -1){
+
+            setTimeout(function(){
+
+              var docFrame = document.getElementById('iframe_bluehack').contentDocument;
+
+              // var docFrame = docFrame.frames[0].contentDocument;
+              // var menuLeft = $(docFrame).find('#nav-mobile-left');
+              // console.log(menuLeft);
+
+              // console.log(docFrame.frames.length);
+              console.log(docFrame);
+
+
+
+            }, 5000)
+
+
+        }
 
         return;
 
@@ -127,10 +169,11 @@ var speechConstructEngine = function(){
 
       // Verifica se ultima palavra capturada pelo Speech está no array de HTML
       if(currentValue.keyword.indexOf(lastWord) != -1){
+      // if(currentValue.keyword == lastWord){
 
         var el = lastDomObj;
 
-        lastCssProp = currentValue.cssProp;
+        lastCssProp = currentValue.cssProp.trim();
 
         console.log(lastCssProp);
 
@@ -145,6 +188,7 @@ var speechConstructEngine = function(){
 
       // Verifica se ultima palavra capturada pelo Speech está no array de HTML
       if(currentValue.keyword.indexOf(lastWord) != -1){
+      // if(currentValue.keyword == lastWord){
 
         var el = lastDomObj;
 
@@ -158,8 +202,6 @@ var speechConstructEngine = function(){
 
     // lastWordRecognized = lastWord;                // Armazena a ultima palavra coletada
     lastFrameSeconds = new Date().getTime();      // Armazena o ultimo tick
-
-    console.log('Devolvendo HTML valido');
 
     // Invoca callback devolvendo o HTML resultante do Parser
     callback(html);

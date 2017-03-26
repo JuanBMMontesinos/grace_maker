@@ -1,16 +1,13 @@
 extends .\partials\layout
 
 block content
-  h3 Teste de gravação de voz e construção
-  hr
-  br
+  h2 Grace Maker
   input(type="button" id="btn_enviar" value="Enviar")
-  br
-  hr
-  
   // Log do processo de analise de vox
   //- h4 Log do processamento do SpeechRecognition
+  
   pre(id='log')
+  div(id="clear")
   
   //- Container ira receber o processamento HTML resultante da analise de audio
   //- h4 Container da construção do site
@@ -20,22 +17,38 @@ block content
     #log{
       border:1px solid lightseagreen;
       padding:5px;
-      //- height: 150px;
-      width: 25%;
+      height: 80px;
+      width: 60%;
       border-radius:3px;
       overflow:scroll;
       float:left;
+      margin-left:15px;
     }
     
     #container{
       border:1px solid gainsboro;
       padding:5px;
-      height: 150px;
+      height: 800px;
       border-radius:3px;
-      width: 65%;
-      float:right;
+      width: 100%;
+      //- float:right;
       margin-top:10px;
       overflow:auto;
+    
+    }
+    
+    #clear{
+      clear:both;
+    }
+    
+    #btn_enviar{
+      float:left;
+      width:100px;
+      margin-top:10px;
+    }
+    
+    h2{
+      font-family:
     }
     
   script(type="text/javascript" src="javascripts/SpeechConstructEngine.js")
@@ -51,6 +64,9 @@ block content
     // Função para imprimir texto na div Log
     function log(text){
       $('#log').append('\n' + text);
+      
+      var div = document.getElementById('log');
+      div.scrollTop = div.scrollHeight - div.clientHeight;
     }
     
     // Função para iniciar a API do SpeechRecognition

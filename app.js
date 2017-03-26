@@ -27,13 +27,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 
 // Configura Session
 app.use(session({ resave: true, saveUninitialized: true, secret: 'uwotm8' }));
 
 // Auto-Load de recursos (Parecido com a ideia do Auto-Load do PHP)
-load('ajax').then('routes').into(app);
+load('ajax').then('routes').then('templates').into(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
